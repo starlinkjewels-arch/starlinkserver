@@ -2,13 +2,22 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-app.use(cors());
-app.use(express.json({ limit: "2mb" }));
 
-const SARVAM_API_KEY = process.env.SARVAM_API_KEY ||"sk_2t16g3mg_vGOQ02P32gztEJDrHpb7jmfO";
+const SARVAM_API_KEY = process.env.SARVAM_API_KEY || "sk_2t16g3mg_vGOQ02P32gztEJDrHpb7jmfO";
 const SARVAM_MODEL = process.env.SARVAM_MODEL || "sarvam-105b";
 const SARVAM_BASE_URL = process.env.SARVAM_BASE_URL || "https://api.sarvam.ai";
 const PORT = process.env.AI_PORT || 5174;
+
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim())
+  : ["*"];
+
+app.use(
+  cors({
+    origin: ALLOWED_ORIGINS.includes("*") ? "*" : ALLOWED_ORIGINS,
+  })
+);
+app.use(express.json({ limit: "2mb" }));
 
 if (!SARVAM_API_KEY) {
   console.error("Missing SARVAM_API_KEY environment variable.");
@@ -129,6 +138,10 @@ const sarvamChat = async (messages) => {
   const content = data?.choices?.[0]?.message?.content || "{}";
   return JSON.parse(content);
 };
+
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
+});
 
 app.post("/api/ai/blog", async (req, res) => {
   try {

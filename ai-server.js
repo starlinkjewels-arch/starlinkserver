@@ -139,7 +139,7 @@ const sarvamChat = async (messages) => {
   return JSON.parse(content);
 };
 
-app.get("/health", (req, res) => {
+app.get("/", (req, res) => {
   res.json({ ok: true });
 });
 

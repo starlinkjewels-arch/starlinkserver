@@ -2,10 +2,10 @@
   "name": "starlink-ai-server",
   "private": true,
   "version": "1.0.0",
-  "main": "ai-server.js",
+  "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node ai-server.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
